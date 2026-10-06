@@ -1,0 +1,7 @@
+project_id = "danzi-house"
+
+[functions.create-booking]
+verify_jwt = false
+
+[functions.sync-airbnb-calendar]
+verify_jwt = false

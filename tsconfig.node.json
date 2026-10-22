@@ -4,10 +4,10 @@
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "allowImportingTsExtensions": true,
     "types": [
       "node"
-    ]
+    ],
+    "noEmit": true
   },
   "include": [
     "vite.config.ts"

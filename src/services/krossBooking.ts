@@ -4,16 +4,16 @@ export type KrossSearchParams = {
   guests: number;
 };
 
-const getEnv = (key: string) => String(import.meta.env[key] ?? '').trim();
+const cleanEnv = (value: string | undefined) => String(value ?? '').trim();
 
 export const krossBookingConfig = {
-  bookingUrl: getEnv('VITE_KROSS_BOOKING_URL'),
-  propertyId: getEnv('VITE_KROSS_PROPERTY_ID'),
-  demoMode: getEnv('VITE_KROSS_DEMO_MODE').toLowerCase() !== 'false',
-  checkInParam: getEnv('VITE_KROSS_CHECKIN_PARAM') || 'checkin',
-  checkOutParam: getEnv('VITE_KROSS_CHECKOUT_PARAM') || 'checkout',
-  guestsParam: getEnv('VITE_KROSS_GUESTS_PARAM') || 'adults',
-  propertyParam: getEnv('VITE_KROSS_PROPERTY_PARAM') || 'property_id',
+  bookingUrl: cleanEnv(import.meta.env.VITE_KROSS_BOOKING_URL),
+  propertyId: cleanEnv(import.meta.env.VITE_KROSS_PROPERTY_ID),
+  demoMode: cleanEnv(import.meta.env.VITE_KROSS_DEMO_MODE).toLowerCase() !== 'false',
+  checkInParam: cleanEnv(import.meta.env.VITE_KROSS_CHECKIN_PARAM) || 'checkin',
+  checkOutParam: cleanEnv(import.meta.env.VITE_KROSS_CHECKOUT_PARAM) || 'checkout',
+  guestsParam: cleanEnv(import.meta.env.VITE_KROSS_GUESTS_PARAM) || 'adults',
+  propertyParam: cleanEnv(import.meta.env.VITE_KROSS_PROPERTY_PARAM) || 'property_id',
 };
 
 export function isKrossBookingConfigured() {

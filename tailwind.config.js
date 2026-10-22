@@ -4,20 +4,23 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ['Cormorant Garamond', 'Georgia', 'serif'],
-        sans: ['Manrope', 'system-ui', 'sans-serif'],
+        display: ['Bricolage Grotesque', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
       },
       colors: {
-        ink: '#25231F',
-        cream: '#F7F3EB',
-        sand: '#EDE4D8',
-        sage: '#7D8972',
-        moss: '#55604F',
-        clay: '#A56E50',
-        cocoa: '#55483D'
+        ink: '#171717',
+        cream: '#FFF9F4',
+        sand: '#FFDCC8',
+        sage: '#FF6846',
+        moss: '#0F6B67',
+        clay: '#E94F2D',
+        cocoa: '#123B3A',
+        sun: '#FFC857',
+        blush: '#FFF0EA'
       },
       boxShadow: {
-        soft: '0 24px 70px rgba(64, 52, 42, 0.12)'
+        soft: '0 24px 70px rgba(23, 23, 23, 0.12)',
+        card: '0 18px 50px rgba(23, 23, 23, 0.10)'
       }
     },
   },

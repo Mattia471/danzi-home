@@ -1,13 +1,6 @@
-# Foto D'Anzi House
+# Immagini demo
 
-I file SVG presenti sono placeholder di sviluppo. Prima della pubblicazione sostituirli, mantenendo gli stessi nomi, con gli originali del cliente:
+Le immagini `*-demo.webp` sono asset dimostrativi generati per la presentazione grafica del progetto D'Anzi House.
+Prima della pubblicazione del sito vanno sostituite con le fotografie originali dell'appartamento, mantenendo gli stessi nomi file oppure aggiornando `src/data/property.ts` e i riferimenti nelle pagine.
 
-- `hero.jpg`/`hero.webp`: terrazza, ideale per la hero
-- `living.jpg`/`living.webp`
-- `bedroom.jpg`/`bedroom.webp`
-- `kitchen.jpg`/`kitchen.webp`
-- `bathroom.jpg`/`bathroom.webp`
-
-Aggiornare quindi `src/data/property.ts` dai `.svg` ai file reali. Consigliato WebP/AVIF, lato lungo 1800-2400 px.
-
-Nota: non hotlinkare le immagini da Airbnb/Google. Usa i file originali forniti dal proprietario per qualità, affidabilità e corretta gestione dei diritti.
+Le immagini sono già ottimizzate in WebP per mantenere buone prestazioni su mobile.

@@ -1,16 +1,21 @@
 # D'Anzi House
 
-Sito vetrina + booking diretto per **D'Anzi House – Gemelli / San Pietro**, Roma.
+Sito vetrina mobile-first per **D'Anzi House – Gemelli / San Pietro**, Roma, predisposto per prenotazioni dirette tramite **Kross Booking**.
+
+
+## Modalità demo prenotazione
+
+Per presentare il flusso al cliente prima del collegamento a Kross Booking, il progetto parte con `VITE_KROSS_DEMO_MODE=true`. La pagina `/prenota` simula disponibilità, tariffa, dati ospite e conferma e salva le prenotazioni demo nel browser. Vedi `docs/DEMO-BOOKING.md`.
 
 ## Stack
 
 - React 18 + Vite + TypeScript
 - Tailwind CSS
 - React Router
-- Supabase: PostgreSQL, Auth, RLS, Edge Functions
-- Vercel: hosting + endpoint pubblico `/calendar.ics`
-- iCal Airbnb: sincronizzazione disponibilità bidirezionale
-- Resend opzionale per email di notifica
+- Kross Booking: booking engine / PMS / channel manager previsto come motore delle prenotazioni
+- Google Maps embedded nella pagina Posizione
+- Supabase presente come supporto/legacy per l'area admin e possibili funzionalità future
+- Vercel per hosting
 
 ## Avvio locale
 
@@ -20,98 +25,72 @@ cp .env.example .env
 npm run dev
 ```
 
-Senza variabili Supabase il frontend funziona in **demo mode**: il layout è navigabile e il form restituisce un codice demo senza salvare dati.
+## Kross Booking
 
-## 1. Crea Supabase
-
-1. Crea un progetto Supabase.
-2. Esegui `supabase/migrations/001_initial_schema.sql` nel SQL Editor.
-3. Copia URL e anon key in `.env`.
-4. In Authentication crea l'utente admin.
-5. Recupera il suo UUID e inseriscilo:
-
-```sql
-insert into public.admin_users(user_id)
-values ('UUID_UTENTE_AUTH');
-```
-
-## 2. Deploy Edge Functions
-
-Con Supabase CLI:
-
-```bash
-supabase functions deploy create-booking --no-verify-jwt
-supabase functions deploy sync-airbnb-calendar --no-verify-jwt
-```
-
-Imposta i secrets:
-
-```bash
-supabase secrets set AIRBNB_ICAL_URL="URL_ICAL_ESPORTATO_DA_AIRBNB"
-supabase secrets set OWNER_EMAIL="booking@danzihouse.it"
-supabase secrets set RESEND_API_KEY="..."
-supabase secrets set FROM_EMAIL="D'Anzi House <booking@danzihouse.it>"
-```
-
-`RESEND_*` è opzionale. La prenotazione funziona anche senza invio email.
-
-## 3. Sync Airbnb -> sito
-
-Airbnb: **Calendario > Disponibilità > Collega calendari > Esporta calendario**, copia l'URL `.ics` e salvalo come `AIRBNB_ICAL_URL`.
-
-La function `sync-airbnb-calendar` legge gli eventi Airbnb e aggiorna `calendar_blocks` in modo transazionale. Il form booking esegue inoltre un controllo live del feed Airbnb subito prima di creare la richiesta.
-
-### Cron consigliato
-
-In Supabase Dashboard crea un Cron Job ogni 15 minuti che invochi `sync-airbnb-calendar`. Il controllo live al submit resta la seconda barriera.
-
-## 4. Sync sito -> Airbnb
-
-Dopo il deploy Vercel il progetto espone:
+Il sito non raccoglie più inutilmente nome, email e telefono prima di conoscere la disponibilità. Il flusso pubblico è:
 
 ```text
-https://TUO-DOMINIO.it/calendar.ics
+Date + ospiti sul sito
+        ↓
+Kross Booking Engine
+        ↓
+Disponibilità / tariffa / dati ospite / pagamento / conferma
+        ↓
+Channel Manager Kross
+        ↓
+Airbnb e altri OTA configurati
 ```
 
-Il rewrite in `vercel.json` lo inoltra alla serverless function `api/calendar.ts`, che esporta **solo prenotazioni `confirmed`**.
+Configura in `.env`:
 
-In Airbnb: **Calendario > Disponibilità > Collega calendari > Importa calendario** e incolla l'URL sopra.
+```env
+VITE_KROSS_DEMO_MODE=true
+VITE_KROSS_BOOKING_URL=
+VITE_KROSS_PROPERTY_ID=
+VITE_KROSS_CHECKIN_PARAM=checkin
+VITE_KROSS_CHECKOUT_PARAM=checkout
+VITE_KROSS_GUESTS_PARAM=adults
+VITE_KROSS_PROPERTY_PARAM=property_id
+```
 
-> Nota: Airbnb dichiara che i calendari importati vengono aggiornati automaticamente circa ogni 3 ore. Per questo il progetto usa di default un flusso di **richiesta + conferma**, non una prenotazione istantanea irrevocabile.
+L'integrazione è centralizzata in `src/services/krossBooking.ts`. Quando Kross fornirà al cliente URL e parametri definitivi del Booking Engine, sarà sufficiente valorizzare le variabili ambiente o adattare questo singolo file.
 
-## 5. Workflow booking
+Dettagli: `docs/KROSS-BOOKING.md`.
 
-1. Il visitatore seleziona le date.
-2. Il frontend legge i blocchi salvati.
-3. Al submit `create-booking` scarica nuovamente l'iCal Airbnb.
-4. I blocchi Airbnb vengono sostituiti in transazione.
-5. La RPC `create_booking_request` usa un advisory lock e verifica blocchi + prenotazioni attive.
-6. La richiesta viene salvata `pending`.
-7. L'admin la porta a `confirmed`.
-8. `/calendar.ics` espone la prenotazione confermata ad Airbnb.
+## Google Maps
 
-## 6. Admin
+La pagina `/posizione` contiene direttamente la mappa Google con pin su D'Anzi House e CTA **Indicazioni stradali**. Non richiede una API key per l'embed attuale.
 
-- `/admin`: login Supabase Auth
-- `/admin/dashboard`: prenotazioni, cambio stato, sync manuale Airbnb
+## UX mobile
 
-Le policy RLS consentono la gestione solo agli UUID presenti in `admin_users`.
+- CTA prenotazione fissa su smartphone
+- menu mobile full-screen
+- hero e sezioni ottimizzate per viewport mobile
+- gallery/card con scroll orizzontale e snap
+- ricerca date touch-friendly
+- primo step prenotazione ridotto a check-in, check-out e ospiti
+- demo completa in 3 step con disponibilità, preventivo, dati ospite e conferma
+- campi con dimensioni adatte al touch e font che evita lo zoom automatico su iPhone
+- safe-area iOS
+- immagini demo WebP ottimizzate
 
-## 7. Foto
+## Foto demo
 
-Il progetto include placeholder grafici per evitare hotlink da Airbnb/Google. Prima del go-live usa **i file originali del proprietario**, ottimizzati in WebP/AVIF. Vedi `public/images/README.md`.
+Le immagini `public/images/*-demo.webp` servono esclusivamente per presentare il concept al cliente e non rappresentano necessariamente gli ambienti reali della struttura. Prima del go-live vanno sostituite con le fotografie originali.
 
-Le informazioni pubbliche dell'alloggio già usate nel copy: 4 ospiti, 1 camera, 2 letti, 1 bagno, terrazza privata 90 m², cucina, Wi-Fi, workspace, letto king 180×200 configurabile come due singoli, posizione Monte Mario vicino a Gemelli e San Filippo Neri.
+## Supabase / iCal legacy
 
-## 8. Prima del go-live
+Il repository conserva le precedenti Edge Functions, migration e logiche iCal come riferimento. Se Kross Booking + Channel Manager viene adottato come soluzione definitiva, **non usare contemporaneamente il vecchio calendario Supabase/iCal come secondo booking engine**. Evitiamo due fonti di verità per lo stesso inventario.
 
-- sostituire tutte le immagini placeholder;
-- completare informativa Privacy/Cookie con i dati reali del titolare e servizi effettivamente attivi;
-- configurare dominio e variabili Vercel;
-- testare import/export iCal con prenotazioni fittizie;
-- verificare email, telefono e regole commerciali del cliente;
-- impostare eventuali analytics solo dopo consenso, se richiesto;
-- aggiungere prezzi e pagamenti solo quando il cliente definisce policy, caparra e cancellazioni.
+## Prima del go-live
+
+- ottenere da Kross Booking l'URL definitivo del Booking Engine e gli eventuali parametri/ID della struttura;
+- configurare Airbnb e gli altri OTA dentro il Channel Manager Kross;
+- sostituire le immagini demo con quelle originali;
+- verificare indirizzo, telefono, policy commerciali, caparra e cancellazione;
+- completare Privacy/Cookie in base ai servizi realmente attivi;
+- testare su iPhone e Android il percorso sito → Kross → conferma;
+- configurare dominio e variabili Vercel.
 
 ## Credito sviluppatore
 

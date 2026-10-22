@@ -42,9 +42,9 @@ export const audiences = [
 ];
 
 export const gallery = [
-  { src: '/images/hero.svg', alt: "Terrazza di D'Anzi House", label: 'La terrazza' },
-  { src: '/images/living.svg', alt: "Soggiorno di D'Anzi House", label: 'Living' },
-  { src: '/images/bedroom.svg', alt: "Camera di D'Anzi House", label: 'Camera' },
-  { src: '/images/kitchen.svg', alt: "Cucina di D'Anzi House", label: 'Cucina' },
-  { src: '/images/bathroom.svg', alt: "Bagno di D'Anzi House", label: 'Bagno' },
+  { src: '/images/terrace-demo.webp', alt: "Terrazza di D'Anzi House - immagine demo", label: 'La terrazza' },
+  { src: '/images/living-demo.webp', alt: "Soggiorno di D'Anzi House - immagine demo", label: 'Living' },
+  { src: '/images/bedroom-demo.webp', alt: "Camera di D'Anzi House - immagine demo", label: 'Camera' },
+  { src: '/images/kitchen-demo.webp', alt: "Cucina di D'Anzi House - immagine demo", label: 'Cucina' },
+  { src: '/images/bathroom-demo.webp', alt: "Bagno di D'Anzi House - immagine demo", label: 'Bagno' },
 ];

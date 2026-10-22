@@ -3,22 +3,27 @@
 @tailwind utilities;
 
 :root {
-  font-family: Manrope, system-ui, sans-serif;
-  color: #25231F;
-  background: #F7F3EB;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  color: #171717;
+  background: #ffffff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
 
 html { scroll-behavior: smooth; }
-body { margin: 0; min-width: 320px; min-height: 100vh; background: #F7F3EB; }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: #ffffff; overflow-x: hidden; }
 * { box-sizing: border-box; }
-::selection { background: #7D8972; color: white; }
+button, input, select, textarea { font: inherit; }
+::selection { background: #FF6846; color: white; }
+
+@media (max-width: 767px) {
+  input[type='date'] { appearance: none; -webkit-appearance: none; }
+}
 
 @layer components {
-  .eyebrow { @apply text-[11px] font-bold uppercase tracking-[0.24em] text-moss; }
-  .display-title { @apply font-display text-5xl font-semibold leading-[0.95] tracking-[-0.03em] md:text-7xl; }
-  .section-title { @apply font-display text-4xl font-semibold leading-tight tracking-[-0.02em] md:text-5xl; }
-  .pill { @apply inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-4 py-2 text-sm backdrop-blur; }
-  .field { @apply w-full rounded-2xl border border-black/10 bg-white px-4 py-3.5 text-sm outline-none transition focus:border-sage focus:ring-4 focus:ring-sage/10; }
+  .eyebrow { @apply text-[10px] font-extrabold uppercase tracking-[0.2em] text-clay sm:text-[11px] sm:tracking-[0.22em]; }
+  .display-title { @apply font-display text-[2.85rem] font-bold leading-[0.94] tracking-[-0.055em] sm:text-6xl md:text-7xl lg:text-[5.7rem]; }
+  .section-title { @apply font-display text-[2.35rem] font-bold leading-[0.98] tracking-[-0.045em] sm:text-4xl md:text-5xl lg:text-6xl; }
+  .pill { @apply inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/90 px-4 py-2 text-sm font-semibold shadow-sm backdrop-blur; }
+  .field { @apply min-h-[52px] w-full rounded-[1rem] border border-black/10 bg-white px-3.5 py-3 text-[16px] outline-none transition placeholder:text-ink/35 focus:border-sage focus:ring-4 focus:ring-sage/10 sm:rounded-2xl sm:px-4 sm:py-3.5 sm:text-sm; }
 }

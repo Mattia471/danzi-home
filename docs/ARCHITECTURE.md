@@ -1,33 +1,33 @@
-# Architettura prenotazioni
+# Architettura D'Anzi House
+
+## Frontend
+
+React + Vite + TypeScript + Tailwind CSS su Vercel.
+
+## Prenotazioni
+
+Il flusso pubblico è predisposto per Kross Booking:
 
 ```text
-Visitore
-   │
-   ▼
-React /prenota
-   │
-   ▼
-Supabase Edge Function create-booking
-   ├── fetch Airbnb iCal (controllo live)
-   ├── RPC replace_airbnb_blocks
-   └── RPC create_booking_request
-           │
-           ▼
-        bookings (pending)
-           │
-      Admin conferma
-           ▼
-        confirmed
-           │
-           ▼
-Vercel /calendar.ics
-           │
-           ▼
-Airbnb importa e blocca le date
+Sito D'Anzi House
+    ↓
+Date + ospiti
+    ↓
+Adapter src/services/krossBooking.ts
+    ↓
+Kross Booking Engine
+    ↓
+PMS / Channel Manager Kross
+    ↓
+Airbnb / altri OTA
 ```
 
-## Perché non prenotazione istantanea
+Kross diventa la fonte operativa per disponibilità, tariffe e conferme. In questo modo il sito non duplica dati anagrafici o pagamenti e non mantiene un secondo calendario indipendente.
 
-Il feed iCal è utile per sincronizzare calendari ma non è un channel manager real-time. Airbnb aggiorna periodicamente i calendari importati. La richiesta di prenotazione riduce il rischio residuo di una prenotazione simultanea sui due canali.
+## Supabase
 
-Per instant booking con garanzia operativa più forte, evolvere verso un PMS/channel manager autorizzato Airbnb e mantenere questo frontend come interfaccia proprietaria.
+Supabase resta nel repository per l'area admin/prototipo precedente e per eventuali funzionalità future non coperte dal PMS, ma il booking pubblico non dipende più da Supabase.
+
+## Posizione
+
+La pagina Posizione usa una Google Map embedded con pin sull'indirizzo della struttura e link diretto alle indicazioni stradali.

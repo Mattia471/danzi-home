@@ -1,97 +1,263 @@
-# D'Anzi House
+<p align="center">
+  <img src="./public/brand/logo-horizontal-1200.png" alt="D'Anzi House" width="520" />
+</p>
 
-Sito vetrina mobile-first per **D'Anzi House – Gemelli / San Pietro**, Roma, predisposto per prenotazioni dirette tramite **Kross Booking**.
+<h1 align="center">D'Anzi House</h1>
 
+<p align="center">
+  Sito ufficiale mobile-first per <strong>D'Anzi House · Gemelli / San Pietro · Roma</strong>.<br />
+  Hospitality, prenotazione diretta e integrazione predisposta per Kross Booking.
+</p>
 
-## Modalità demo prenotazione
+<p align="center">
+  <a href="https://github.com/Mattia471/danzi-home/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Mattia471/danzi-home/actions/workflows/ci.yml/badge.svg" /></a>
+  <img alt="React 18" src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&logoColor=white" />
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white" />
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white" />
+  <img alt="pnpm" src="https://img.shields.io/badge/pnpm-ready-F69220?logo=pnpm&logoColor=white" />
+</p>
 
-Per presentare il flusso al cliente prima del collegamento a Kross Booking, il progetto parte con `VITE_KROSS_DEMO_MODE=true`. La pagina `/prenota` simula disponibilità, tariffa, dati ospite e conferma e salva le prenotazioni demo nel browser. Vedi `docs/DEMO-BOOKING.md`.
+---
+
+## Panoramica
+
+D'Anzi House è un appartamento a Roma, zona Monte Mario, pensato per soggiorni turistici ma soprattutto per chi deve restare in città per **cure, assistenza a familiari, lavoro ospedaliero o università**.
+
+Il progetto traduce questo posizionamento in un'esperienza digitale calda e semplice da usare, con particolare attenzione al mobile e a un percorso di prenotazione breve.
+
+### Stato attuale
+
+- ✅ sito pubblico responsive e mobile-first
+- ✅ branding D'Anzi House integrato
+- ✅ gallery e asset demo ottimizzati in WebP
+- ✅ pagina posizione con Google Maps embedded
+- ✅ booking demo completo e persistente nel browser
+- ✅ adapter Kross Booking già centralizzato
+- ✅ predisposizione Vercel
+- ✅ CI GitHub Actions
+- ⏳ collegamento Booking Engine Kross reale da completare con URL/ID del cliente
+- ⏳ foto demo da sostituire con fotografie ufficiali prima del go-live
+
+> La modalità demo è attiva di default e **non rappresenta disponibilità o prezzi reali**.
+
+## Funzionalità
+
+### Sito pubblico
+
+- Home editoriale orientata alla conversione
+- Pagina dedicata agli spazi della casa
+- Gallery responsive
+- Pagina posizione con pin e indicazioni stradali
+- CTA prenotazione sticky su smartphone
+- menu mobile full-screen
+- scroll-to-top automatico tra le route
+- favicon, Apple Touch Icon e metadata social
+
+### Prenotazione
+
+Il progetto supporta due modalità:
+
+**Demo**
+```text
+Date + ospiti
+    ↓
+Controllo disponibilità simulata
+    ↓
+Preventivo demo
+    ↓
+Dati ospite
+    ↓
+Conferma + codice prenotazione
+    ↓
+Persistenza localStorage
+```
+
+**Produzione con Kross Booking**
+```text
+D'Anzi House
+    ↓
+Date + ospiti
+    ↓
+src/services/krossBooking.ts
+    ↓
+Kross Booking Engine
+    ↓
+PMS / Channel Manager
+    ↓
+Airbnb + altri OTA
+```
+
+Kross Booking deve diventare la **fonte unica per disponibilità, tariffe e conferme**. Il vecchio flusso Supabase/iCal resta nel repository solo come riferimento legacy.
 
 ## Stack
 
-- React 18 + Vite + TypeScript
-- Tailwind CSS
-- React Router
-- Kross Booking: booking engine / PMS / channel manager previsto come motore delle prenotazioni
-- Google Maps embedded nella pagina Posizione
-- Supabase presente come supporto/legacy per l'area admin e possibili funzionalità future
-- Vercel per hosting
+| Area | Tecnologia |
+| --- | --- |
+| Frontend | React 18 |
+| Linguaggio | TypeScript |
+| Build | Vite 6 |
+| UI | Tailwind CSS |
+| Routing | React Router |
+| Icone | Lucide React |
+| Date | date-fns |
+| Booking | Kross Booking ready |
+| Backend legacy/opzionale | Supabase |
+| Hosting | Vercel |
+| Package manager | pnpm |
+
+## Requisiti
+
+- Node.js **20+**
+- pnpm **9+** o **10+**
 
 ## Avvio locale
 
 ```bash
-npm install
-cp .env.example .env
-npm run dev
+git clone https://github.com/Mattia471/danzi-home.git
+cd danzi-home
+
+pnpm install
+cp .env.example .env.local
+pnpm dev
 ```
 
-## Kross Booking
+Il progetto sarà disponibile all'indirizzo mostrato da Vite, normalmente `http://localhost:5173`.
 
-Il sito non raccoglie più inutilmente nome, email e telefono prima di conoscere la disponibilità. Il flusso pubblico è:
+## Variabili ambiente
+
+Copia `.env.example` in `.env.local`.
+
+### Kross Booking
+
+| Variabile | Obbligatoria | Descrizione |
+| --- | --- | --- |
+| `VITE_KROSS_DEMO_MODE` | sì | `true` usa il simulatore, `false` usa Kross |
+| `VITE_KROSS_BOOKING_URL` | produzione | URL Booking Engine fornito da Kross |
+| `VITE_KROSS_PROPERTY_ID` | se richiesto | ID struttura |
+| `VITE_KROSS_CHECKIN_PARAM` | no | nome query param check-in |
+| `VITE_KROSS_CHECKOUT_PARAM` | no | nome query param check-out |
+| `VITE_KROSS_GUESTS_PARAM` | no | nome query param ospiti |
+| `VITE_KROSS_PROPERTY_PARAM` | no | nome query param struttura |
+
+### Supabase legacy/opzionale
+
+`VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` servono soltanto per le parti legacy/admin ancora presenti. Le chiavi server-side non devono mai essere esposte con prefisso `VITE_`.
+
+Consulta [`.env.example`](./.env.example) per l'elenco completo.
+
+## Script
+
+```bash
+pnpm dev        # sviluppo locale
+pnpm typecheck  # controllo TypeScript
+pnpm lint       # ESLint
+pnpm build      # build produzione
+pnpm check      # lint + build
+pnpm preview    # preview build
+```
+
+## Struttura
 
 ```text
-Date + ospiti sul sito
-        ↓
-Kross Booking Engine
-        ↓
-Disponibilità / tariffa / dati ospite / pagamento / conferma
-        ↓
-Channel Manager Kross
-        ↓
-Airbnb e altri OTA configurati
+danzi-home/
+├─ api/                    # endpoint Vercel legacy
+├─ docs/                   # documentazione tecnica e operativa
+├─ public/
+│  ├─ brand/               # logo, favicon e asset branding
+│  └─ images/              # immagini sito
+├─ src/
+│  ├─ components/
+│  │  ├─ home/
+│  │  ├─ layout/
+│  │  └─ ui/
+│  ├─ data/
+│  ├─ lib/
+│  ├─ pages/
+│  ├─ services/
+│  └─ types/
+├─ supabase/               # migration/functions legacy
+├─ .env.example
+├─ vercel.json
+└─ package.json
 ```
 
-Configura in `.env`:
+## Routing
 
-```env
-VITE_KROSS_DEMO_MODE=true
-VITE_KROSS_BOOKING_URL=
-VITE_KROSS_PROPERTY_ID=
-VITE_KROSS_CHECKIN_PARAM=checkin
-VITE_KROSS_CHECKOUT_PARAM=checkout
-VITE_KROSS_GUESTS_PARAM=adults
-VITE_KROSS_PROPERTY_PARAM=property_id
-```
+| Route | Descrizione |
+| --- | --- |
+| `/` | Home |
+| `/la-casa` | Spazi e servizi |
+| `/posizione` | Mappa e collegamenti |
+| `/prenota` | Demo booking / handoff Kross |
+| `/privacy` | Informativa |
+| `/admin` | Login area legacy |
+| `/admin/dashboard` | Dashboard legacy |
 
-L'integrazione è centralizzata in `src/services/krossBooking.ts`. Quando Kross fornirà al cliente URL e parametri definitivi del Booking Engine, sarà sufficiente valorizzare le variabili ambiente o adattare questo singolo file.
+## Deployment su Vercel
 
-Dettagli: `docs/KROSS-BOOKING.md`.
+1. Importa la repository in Vercel.
+2. Framework preset: **Vite**.
+3. Build command: `pnpm build`.
+4. Output directory: `dist`.
+5. Aggiungi le variabili ambiente.
+6. In produzione imposta `VITE_KROSS_DEMO_MODE=false` solo dopo aver verificato il Booking Engine reale.
 
-## Google Maps
+La configurazione SPA è già gestita da [`vercel.json`](./vercel.json).
 
-La pagina `/posizione` contiene direttamente la mappa Google con pin su D'Anzi House e CTA **Indicazioni stradali**. Non richiede una API key per l'embed attuale.
+Per la checklist completa: [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md).
 
-## UX mobile
+## Documentazione
 
-- CTA prenotazione fissa su smartphone
-- menu mobile full-screen
-- hero e sezioni ottimizzate per viewport mobile
-- gallery/card con scroll orizzontale e snap
-- ricerca date touch-friendly
-- primo step prenotazione ridotto a check-in, check-out e ospiti
-- demo completa in 3 step con disponibilità, preventivo, dati ospite e conferma
-- campi con dimensioni adatte al touch e font che evita lo zoom automatico su iPhone
-- safe-area iOS
-- immagini demo WebP ottimizzate
+- [Architettura](./docs/ARCHITECTURE.md)
+- [Integrazione Kross Booking](./docs/KROSS-BOOKING.md)
+- [Booking demo](./docs/DEMO-BOOKING.md)
+- [Deployment e go-live](./docs/DEPLOYMENT.md)
+- [Brand & UX](./docs/BRAND-AND-UX.md)
+- [Contribuire](./CONTRIBUTING.md)
+- [Security policy](./SECURITY.md)
 
-## Foto demo
+## Immagini demo
 
-Le immagini `public/images/*-demo.webp` servono esclusivamente per presentare il concept al cliente e non rappresentano necessariamente gli ambienti reali della struttura. Prima del go-live vanno sostituite con le fotografie originali.
+Gli asset `public/images/*-demo.webp` sono usati per mostrare il concept al cliente e **non devono essere considerati fotografie ufficiali della struttura**.
 
-## Supabase / iCal legacy
+Prima della pubblicazione vanno sostituiti con le immagini reali, mantenendo preferibilmente WebP/AVIF e dimensioni ottimizzate.
 
-Il repository conserva le precedenti Edge Functions, migration e logiche iCal come riferimento. Se Kross Booking + Channel Manager viene adottato come soluzione definitiva, **non usare contemporaneamente il vecchio calendario Supabase/iCal come secondo booking engine**. Evitiamo due fonti di verità per lo stesso inventario.
+## Checklist prima del go-live
 
-## Prima del go-live
+- [ ] URL Booking Engine Kross confermato
+- [ ] property ID e parametri Kross verificati
+- [ ] Channel Manager Kross sincronizzato con Airbnb
+- [ ] demo mode disattivata
+- [ ] foto ufficiali inserite
+- [ ] prezzi/policy reali verificati
+- [ ] privacy e cookie policy definitive
+- [ ] telefono, email e indirizzo ricontrollati
+- [ ] test completo da iPhone e Android
+- [ ] dominio e redirect HTTPS configurati
+- [ ] test prenotazione reale end-to-end
 
-- ottenere da Kross Booking l'URL definitivo del Booking Engine e gli eventuali parametri/ID della struttura;
-- configurare Airbnb e gli altri OTA dentro il Channel Manager Kross;
-- sostituire le immagini demo con quelle originali;
-- verificare indirizzo, telefono, policy commerciali, caparra e cancellazione;
-- completare Privacy/Cookie in base ai servizi realmente attivi;
-- testare su iPhone e Android il percorso sito → Kross → conferma;
-- configurare dominio e variabili Vercel.
+## Sicurezza
 
-## Credito sviluppatore
+Non committare mai:
 
-Il footer contiene il credito con link a **@mattiacucuzza_**.
+- file `.env`
+- service-role key Supabase
+- credenziali Kross
+- token Vercel
+- chiavi API private
+
+Le variabili prefissate `VITE_` sono incluse nel bundle client e vanno considerate pubbliche.
+
+Per segnalazioni: [SECURITY.md](./SECURITY.md).
+
+## Crediti
+
+Design e sviluppo web: [@mattiacucuzza_](https://www.instagram.com/mattiacucuzza_/)
+
+---
+
+<p align="center">
+  <strong>D'Anzi House</strong><br />
+  Roma · Monte Mario · Gemelli
+</p>

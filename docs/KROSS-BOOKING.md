@@ -1,56 +1,71 @@
 # Integrazione Kross Booking
 
-Il frontend pubblico è predisposto perché **Kross Booking sia la fonte principale per disponibilità, tariffe e prenotazioni**.
+## Ruolo di Kross
 
-## Flusso previsto
+Kross Booking è previsto come motore principale per disponibilità, tariffe e prenotazioni.
 
-1. L'utente seleziona check-in, check-out e numero di ospiti su D'Anzi House.
-2. Il sito costruisce l'URL del Booking Engine Kross con i parametri selezionati.
-3. L'utente prosegue su Kross Booking, dove vengono gestiti disponibilità reale, tariffa, dati dell'ospite, policy, eventuale garanzia/pagamento e conferma.
-4. Kross Booking / Channel Manager sincronizza disponibilità e prenotazioni con i canali OTA configurati, incluso Airbnb quando il relativo collegamento è attivo.
+Il sito D'Anzi House non deve mantenere un calendario indipendente quando il Channel Manager Kross sarà operativo.
 
+## Flusso
 
-## Modalità demo
-
-Finché il collegamento reale non è disponibile, il progetto usa per impostazione predefinita:
-
-```env
-VITE_KROSS_DEMO_MODE=true
+```text
+Utente
+  ↓
+check-in + check-out + ospiti
+  ↓
+D'Anzi House
+  ↓
+src/services/krossBooking.ts
+  ↓
+Kross Booking Engine
+  ↓
+prenotazione / pagamento / conferma
+  ↓
+Channel Manager Kross
+  ↓
+Airbnb + altri OTA
 ```
-
-In questa modalità `/prenota` simula disponibilità, preventivo e conferma, senza contattare Kross. Per collegare il Booking Engine reale impostare `VITE_KROSS_DEMO_MODE=false` e compilare l'URL Kross. Dettagli in `docs/DEMO-BOOKING.md`.
 
 ## Configurazione
 
-Copia `.env.example` in `.env` e compila almeno:
-
 ```env
-VITE_KROSS_BOOKING_URL=https://URL-FORNITO-DA-KROSS...
-```
+VITE_KROSS_DEMO_MODE=false
+VITE_KROSS_BOOKING_URL=https://...
+VITE_KROSS_PROPERTY_ID=
 
-Se Kross assegna un identificativo struttura separato:
-
-```env
-VITE_KROSS_PROPERTY_ID=...
-```
-
-I nomi dei parametri sono configurabili perché l'URL definitivo e la convenzione query devono essere verificati sull'account Kross del cliente:
-
-```env
 VITE_KROSS_CHECKIN_PARAM=checkin
 VITE_KROSS_CHECKOUT_PARAM=checkout
 VITE_KROSS_GUESTS_PARAM=adults
 VITE_KROSS_PROPERTY_PARAM=property_id
 ```
 
-L'adapter è centralizzato in:
+L'URL, l'ID struttura e i nomi dei query parameter vanno confermati sulla configurazione Kross del cliente.
+
+## Adapter
+
+Tutta la costruzione del link Kross è centralizzata in:
 
 ```text
 src/services/krossBooking.ts
 ```
 
-Se Kross fornisce una convenzione URL diversa, un widget dedicato o un'integrazione white-label, basta modificare questo adapter senza cambiare tutte le CTA del sito.
+Se Kross fornisce un widget, un'integrazione white-label o una convenzione URL diversa, modificare questo file invece delle singole CTA.
 
-## Supabase e vecchio iCal
+## Attivazione produzione
 
-Le funzioni Supabase/iCal presenti nel repository sono mantenute come codice legacy e possono essere utili per dati non gestiti da Kross. Se Kross Booking viene usato insieme al suo Channel Manager, **non bisogna mantenere due motori separati di disponibilità** per lo stesso inventario: Kross deve essere la fonte unica lato prenotazioni.
+Prima di impostare `VITE_KROSS_DEMO_MODE=false`:
+
+1. ottenere il Booking Engine ufficiale;
+2. confermare ID struttura;
+3. verificare formato date richiesto;
+4. verificare parametro ospiti;
+5. verificare eventuali codici lingua/currency;
+6. testare date disponibili;
+7. testare date non disponibili;
+8. completare una prenotazione reale di prova;
+9. verificare il blocco su Airbnb tramite Channel Manager;
+10. verificare una cancellazione/modifica.
+
+## Regola importante
+
+Non usare contemporaneamente Kross e il vecchio calendario Supabase/iCal come due fonti operative di disponibilità. Il risultato sarebbe un rischio inutile di inconsistenze e overbooking.

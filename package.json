@@ -1,12 +1,18 @@
 {
   "name": "danzi-house",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Official mobile-first website for D'Anzi House in Rome, prepared for Kross Booking integration.",
   "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "vite",
+    "typecheck": "tsc -b --pretty false",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "check": "pnpm lint && pnpm build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -32,7 +38,7 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.7.2",
-    "vite": "^6.0.7",
-    "typescript-eslint": "^8.20.0"
+    "typescript-eslint": "^8.20.0",
+    "vite": "^6.0.7"
   }
 }
